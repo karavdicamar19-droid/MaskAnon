@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=MASKANON+v6.0" alt="MaskAnon Banner">
+  <img src="Gemini_Generated_Image_kk77rlkk77rlkk77~2.png" alt="MaskAnon Banner">
 </div>
 
 # 👺 MASKANON
