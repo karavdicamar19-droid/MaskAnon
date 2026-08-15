@@ -88,7 +88,7 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
         payload = request.get_json(silent=True) or {}
         text = str(payload.get("text", ""))
         if model is None:
-            return jsonify({"error": startup_error}), 400
+            return jsonify({"error": startup_error}), 503
 
         try:
             prediction, confidence = predict_text(model, text)

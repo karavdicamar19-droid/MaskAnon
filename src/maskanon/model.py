@@ -81,10 +81,8 @@ def predict_text(model: Pipeline, text: str) -> tuple[str, float | None]:
     pred = str(model.predict([cleaned])[0])
     confidence: float | None = None
 
-    try:
+    if hasattr(model[-1], "predict_proba"):
         proba = model.predict_proba([cleaned])[0]
         confidence = float(max(proba))
-    except Exception:
-        confidence = None
 
     return pred, confidence

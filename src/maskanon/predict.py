@@ -29,7 +29,7 @@ def predict_batch(input_path: Path, model_path: Path, output_path: Path | None =
     if not texts:
         raise ValueError("No input messages found for batch prediction.")
 
-    try:
+    if hasattr(model[-1], "predict_proba") and hasattr(model, "classes_"):
         probas = model.predict_proba(texts)
         class_labels = [str(label) for label in model.classes_]
         labels: list[str] = []
@@ -39,7 +39,7 @@ def predict_batch(input_path: Path, model_path: Path, output_path: Path | None =
             max_index = max(range(len(row)), key=row.__getitem__)
             labels.append(class_labels[max_index])
             confidences.append(float(row[max_index]))
-    except Exception:
+    else:
         labels = [str(label) for label in model.predict(texts)]
         confidences = [None] * len(texts)
 
