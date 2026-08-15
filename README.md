@@ -1,38 +1,98 @@
-<div align="center">
-  <img src="Gemini_Generated_Image_kk77rlkk77rlkk77~2.png" alt="MaskAnon Banner">
-</div>
+# MaskAnon (Defensive Phishing Detection AI)
 
-# 👺 MASKANON
-**The Ultimate URL Masking & Tunneling Tool for Termux / Linux**
+> **Legal & Ethical Notice:** This project is strictly for defensive cybersecurity, education, and awareness.
+> It must **not** be used for phishing, credential theft, malware delivery, exploit development, or any unauthorized activity.
 
-**MaskAnon** je moćna, automatizovana Python skripta dizajnirana za "sakrivanje" dugačkih i sumnjivih linkova (poput onih koje generišu lokalni serveri). Alat automatski podiže tunele u pozadini, hvata generisani URL i provlači ga kroz napredne filtere za maskiranje, stvarajući linkove koji izgledaju potpuno bezopasno (npr. `is.gd/facebook_prijava_sigurnost`).
+MaskAnon is a complete Python application for classifying message text as `phishing` or `legitimate` using a standard ML pipeline (TF-IDF + Logistic Regression).
 
-Ovo je savršen alat za testiranje sigurnosti (penetration testing), simulacije socijalnog inženjeringa i izbjegavanje anti-spam filtera na platformama za komunikaciju.
+## Project structure
 
----
+- `src/maskanon/` — package source code
+  - `train.py` — model training orchestration
+  - `predict.py` — single and batch inference helpers
+  - `cli.py` — command-line interface
+  - `webapp.py` — Flask web UI + JSON API
+- `data/sample_phishing_messages.csv` — safe sample dataset
+- `artifacts/` — persisted model artifacts (generated locally)
+- `requirements.txt` — runtime dependencies
+- `pyproject.toml` — package setup
 
-## 🌐 Kako funkcionišu Tuneli u MaskAnonu?
-Da bi neko preko interneta pristupio tvom lokalnom fajlu ili lažnoj stranici na tvom telefonu/kompjuteru, potreban ti je **Tunel**. MaskAnon nudi nekoliko opcija:
+## Setup
 
-* **[1] Ngrok (Pozadina - treba API):** Najstabilniji servis. **Zahtijeva API Authtoken** (registruj se besplatno na ngrok.com). MaskAnon automatski sprema tvoj ključ i sam "krade" link.
-* **[2] Cloudflare (Pozadina - Argo):** Vrhunska alternativa. **Ne traži registraciju ni API ključ.** Skripta ga pokreće u pozadini i automatski "čupa" `trycloudflare.com` link iz logova.
-* **[3] & [4] SSH Tuneli (Serveo & Localhost.run):** Ne zahtijevaju dodatnu instalaciju. Pokreću se ručno u drugom prozoru terminala.
-
----
-
-## ⚙️ Instalacija (Termux / Kali Linux)
-
-Otvori terminal i ukucaj sljedeće komande redom kako bi instalirao alat i sve potrebne pakete:
+From repository root:
 
 ```bash
-# 1. Ažuriranje sistema i instalacija paketa
-pkg update && pkg upgrade -y
-pkg install python git qrencode wget curl openssh -y
-pip install requests
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install -e .
+```
 
-# 2. Preuzimanje alata sa GitHuba
-git clone [https://github.com/TvojGitHubUsername/MaskAnon.git](https://github.com/TvojGitHubUsername/MaskAnon.git)
-cd MaskAnon
+## Train model
 
-# 3. Pokretanje alata
-python mask.py
+```bash
+python -m maskanon.cli train \
+  --dataset data/sample_phishing_messages.csv \
+  --model-path artifacts/phishing_model.joblib
+```
+
+## Predict single message (CLI)
+
+```bash
+python -m maskanon.cli predict \
+  --text "Urgent: verify your account now at https://example-login-check.test" \
+  --model-path artifacts/phishing_model.joblib
+```
+
+## Batch scoring (CLI, optional)
+
+Input can be `.txt` (one message per line) or `.csv` (must include `text` column).
+
+```bash
+python -m maskanon.cli predict-batch \
+  --input data/sample_phishing_messages.csv \
+  --model-path artifacts/phishing_model.joblib \
+  --output artifacts/batch_predictions.csv
+```
+
+## Run Flask web app
+
+```bash
+python -m maskanon.webapp
+```
+
+Then open `http://127.0.0.1:5000`.
+
+### JSON API example
+
+```bash
+curl -X POST http://127.0.0.1:5000/api/predict \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Please verify your account password immediately."}'
+```
+
+## Replacing sample dataset with real data
+
+Use a CSV with columns:
+
+- `text` — raw message text
+- `label` — `phishing` or `legitimate`
+
+Keep class labels normalized to those exact values. Then pass your dataset path via `--dataset` during training.
+
+## Troubleshooting
+
+- **`Model not found ... Run training first`**
+  - Train first with `python -m maskanon.cli train ...`.
+- **`Dataset missing required columns`**
+  - Ensure CSV has `text,label` header.
+- **Import/module errors for `maskanon`**
+  - Re-run `pip install -e .` from repo root.
+- **Flask app fails at startup due to missing model**
+  - Generate `artifacts/phishing_model.joblib` by running the train command.
+
+## Defensive-use disclaimer
+
+This repository intentionally excludes offensive capabilities and abuse-oriented instructions.
+It is designed only to help users detect and reduce phishing risk in legal, authorized contexts.

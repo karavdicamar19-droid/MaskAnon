@@ -1,0 +1,21 @@
+text,label
+"Urgent: Your account will be closed today. Verify now at http://secure-login-check.example",phishing
+"Your package is delayed. Confirm payment details immediately: http://delivery-fix.example",phishing
+"Security alert: unusual login detected. Update your password here now.",phishing
+"Bank notice: we suspended your card, click this link to reactivate.",phishing
+"You won a gift card. Submit credentials within 30 minutes to claim.",phishing
+"Final warning from IT: mailbox exceeded quota, enter password to keep access.",phishing
+"Invoice overdue. Open attachment and enable macros to review charges.",phishing
+"Confirm your payroll details urgently or salary transfer will fail.",phishing
+"Account verification required. Login with company email and password immediately.",phishing
+"Microsoft support: suspicious activity found, call now and share one-time code.",phishing
+"Can we move our meeting to 2 PM tomorrow?",legitimate
+"Please find the project update attached for your review.",legitimate
+"Reminder: submit your expense report by Friday.",legitimate
+"Your order has shipped and will arrive on Monday.",legitimate
+"Thanks for your help during the workshop today.",legitimate
+"The cafeteria menu was updated for next week.",legitimate
+"Let's schedule a code review session this afternoon.",legitimate
+"Your two-factor authentication was successfully enabled.",legitimate
+"Please reset your password only through the official company portal bookmark.",legitimate
+"Monthly newsletter: product updates and upcoming events.",legitimate
