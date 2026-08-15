@@ -69,11 +69,11 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
             text = request.form.get("text", "")
             if model is None:
                 error = startup_error
+            elif not text.strip():
+                error = "Please provide non-empty message text."
             else:
                 try:
                     prediction, confidence = predict_text(model, text)
-                except ValueError as exc:
-                    error = str(exc)
                 except Exception:
                     error = "Prediction failed due to an internal server error."
 
@@ -104,8 +104,6 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
 
         try:
             prediction, confidence = predict_text(model, text)
-        except ValueError as exc:
-            return jsonify({"error": str(exc)}), 400
         except Exception:
             return jsonify({"error": "Prediction failed due to an internal server error."}), 500
 
