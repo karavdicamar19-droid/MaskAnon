@@ -89,7 +89,11 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
         if "text" not in payload:
             return jsonify({"error": "Missing required field: text"}), 400
 
-        text = str(payload.get("text", ""))
+        raw_text = payload["text"]
+        if not isinstance(raw_text, str):
+            return jsonify({"error": "Field 'text' must be a string."}), 400
+
+        text = raw_text
         if not text.strip():
             return jsonify({"error": "Field 'text' must be a non-empty string."}), 400
 
