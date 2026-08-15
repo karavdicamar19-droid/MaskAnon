@@ -72,8 +72,10 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
             else:
                 try:
                     prediction, confidence = predict_text(model, text)
-                except Exception as exc:
+                except ValueError as exc:
                     error = str(exc)
+                except Exception:
+                    error = "Prediction failed due to an internal server error."
 
         return render_template_string(
             HTML_TEMPLATE,
@@ -102,8 +104,10 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
 
         try:
             prediction, confidence = predict_text(model, text)
-        except Exception as exc:
+        except ValueError as exc:
             return jsonify({"error": str(exc)}), 400
+        except Exception:
+            return jsonify({"error": "Prediction failed due to an internal server error."}), 500
 
         return jsonify(
             {
