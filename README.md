@@ -7,19 +7,19 @@ MaskAnon is a complete Python application for classifying message text as `phish
 
 ## Project structure
 
-- `/home/runner/work/MaskAnon/MaskAnon/src/maskanon/` — package source code
+- `src/maskanon/` — package source code
   - `train.py` — model training orchestration
   - `predict.py` — single and batch inference helpers
   - `cli.py` — command-line interface
   - `webapp.py` — Flask web UI + JSON API
-- `/home/runner/work/MaskAnon/MaskAnon/data/sample_phishing_messages.csv` — safe sample dataset
-- `/home/runner/work/MaskAnon/MaskAnon/artifacts/` — persisted model artifacts (generated locally)
-- `/home/runner/work/MaskAnon/MaskAnon/requirements.txt` — runtime dependencies
-- `/home/runner/work/MaskAnon/MaskAnon/pyproject.toml` — package setup
+- `data/sample_phishing_messages.csv` — safe sample dataset
+- `artifacts/` — persisted model artifacts (generated locally)
+- `requirements.txt` — runtime dependencies
+- `pyproject.toml` — package setup
 
 ## Setup
 
-From repository root (`/home/runner/work/MaskAnon/MaskAnon`):
+From repository root:
 
 ```bash
 python -m venv .venv
@@ -33,8 +33,8 @@ pip install -e .
 
 ```bash
 python -m maskanon.cli train \
-  --dataset /home/runner/work/MaskAnon/MaskAnon/data/sample_phishing_messages.csv \
-  --model-path /home/runner/work/MaskAnon/MaskAnon/artifacts/phishing_model.joblib
+  --dataset data/sample_phishing_messages.csv \
+  --model-path artifacts/phishing_model.joblib
 ```
 
 ## Predict single message (CLI)
@@ -42,7 +42,7 @@ python -m maskanon.cli train \
 ```bash
 python -m maskanon.cli predict \
   --text "Urgent: verify your account now at https://example-login-check.test" \
-  --model-path /home/runner/work/MaskAnon/MaskAnon/artifacts/phishing_model.joblib
+  --model-path artifacts/phishing_model.joblib
 ```
 
 ## Batch scoring (CLI, optional)
@@ -51,9 +51,9 @@ Input can be `.txt` (one message per line) or `.csv` (must include `text` column
 
 ```bash
 python -m maskanon.cli predict-batch \
-  --input /home/runner/work/MaskAnon/MaskAnon/data/sample_phishing_messages.csv \
-  --model-path /home/runner/work/MaskAnon/MaskAnon/artifacts/phishing_model.joblib \
-  --output /home/runner/work/MaskAnon/MaskAnon/artifacts/batch_predictions.csv
+  --input data/sample_phishing_messages.csv \
+  --model-path artifacts/phishing_model.joblib \
+  --output artifacts/batch_predictions.csv
 ```
 
 ## Run Flask web app
@@ -90,7 +90,7 @@ Keep class labels normalized to those exact values. Then pass your dataset path 
 - **Import/module errors for `maskanon`**
   - Re-run `pip install -e .` from repo root.
 - **Flask app fails at startup due to missing model**
-  - Generate `/home/runner/work/MaskAnon/MaskAnon/artifacts/phishing_model.joblib` by running the train command.
+  - Generate `artifacts/phishing_model.joblib` by running the train command.
 
 ## Defensive-use disclaimer
 

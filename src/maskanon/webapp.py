@@ -27,6 +27,10 @@ HTML_TEMPLATE = """
       <button type="submit">Classify</button>
     </form>
 
+    {% if error %}
+      <p class="warn">{{ error }}</p>
+    {% endif %}
+
     {% if prediction %}
       <div class="card">
         <h2>Result</h2>
@@ -60,7 +64,7 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
                 error = str(exc)
 
         return render_template_string(
-            HTML_TEMPLATE + ("<p class='warn'>{{ error }}</p>" if error else ""),
+            HTML_TEMPLATE,
             prediction=prediction,
             confidence=confidence,
             text=text,
