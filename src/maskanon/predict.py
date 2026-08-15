@@ -29,13 +29,13 @@ def predict_batch(input_path: Path, model_path: Path, output_path: Path | None =
     if not texts:
         raise ValueError("No input messages found for batch prediction.")
 
-    labels: list[str] = []
-    confidences: list[float | None] = []
+    labels = [str(label) for label in model.predict(texts)]
 
-    for text in texts:
-        label, confidence = predict_text(model, text)
-        labels.append(label)
-        confidences.append(confidence)
+    try:
+        probas = model.predict_proba(texts)
+        confidences: list[float | None] = [float(max(row)) for row in probas]
+    except Exception:
+        confidences = [None] * len(texts)
 
     result_df["prediction"] = labels
     result_df["confidence"] = confidences

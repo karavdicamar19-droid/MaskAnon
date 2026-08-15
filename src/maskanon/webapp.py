@@ -23,7 +23,7 @@ HTML_TEMPLATE = """
     <p class="warn">For legal, ethical, defensive use only.</p>
     <form method="post">
       <label for="text">Message text</label><br>
-      <textarea id="text" name="text" required>{{ text or "" }}</textarea><br><br>
+      <textarea id="text" name="text" required>{{ (text or "") | e }}</textarea><br><br>
       <button type="submit">Classify</button>
     </form>
 
