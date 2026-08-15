@@ -86,7 +86,13 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
     @app.route("/api/predict", methods=["POST"])
     def api_predict():
         payload = request.get_json(silent=True) or {}
+        if "text" not in payload:
+            return jsonify({"error": "Missing required field: text"}), 400
+
         text = str(payload.get("text", ""))
+        if not text.strip():
+            return jsonify({"error": "Field 'text' must be a non-empty string."}), 400
+
         if model is None:
             return jsonify({"error": startup_error}), 503
 
