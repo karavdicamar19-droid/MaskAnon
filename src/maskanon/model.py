@@ -13,7 +13,7 @@ from sklearn.pipeline import Pipeline
 ModelBundle = dict[str, Any]
 
 
-def build_pipeline() -> Pipeline:
+def build_pipeline(random_state: int = 42) -> Pipeline:
     return Pipeline(
         steps=[
             (
@@ -26,7 +26,7 @@ def build_pipeline() -> Pipeline:
                     max_features=5000,
                 ),
             ),
-            ("clf", LogisticRegression(max_iter=1000, random_state=42)),
+            ("clf", LogisticRegression(max_iter=1000, random_state=random_state)),
         ]
     )
 
@@ -40,7 +40,7 @@ def train_model(df: pd.DataFrame, test_size: float = 0.2, random_state: int = 42
         stratify=df["label"],
     )
 
-    model = build_pipeline()
+    model = build_pipeline(random_state=random_state)
     model.fit(x_train, y_train)
 
     y_pred = model.predict(x_valid)

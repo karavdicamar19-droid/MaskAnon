@@ -29,12 +29,18 @@ def predict_batch(input_path: Path, model_path: Path, output_path: Path | None =
     if not texts:
         raise ValueError("No input messages found for batch prediction.")
 
-    labels = [str(label) for label in model.predict(texts)]
-
     try:
         probas = model.predict_proba(texts)
-        confidences: list[float | None] = [float(max(row)) for row in probas]
+        class_labels = [str(label) for label in model.classes_]
+        labels: list[str] = []
+        confidences: list[float | None] = []
+
+        for row in probas:
+            max_index = max(range(len(row)), key=row.__getitem__)
+            labels.append(class_labels[max_index])
+            confidences.append(float(row[max_index]))
     except Exception:
+        labels = [str(label) for label in model.predict(texts)]
         confidences = [None] * len(texts)
 
     result_df["prediction"] = labels

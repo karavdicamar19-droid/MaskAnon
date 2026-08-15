@@ -47,21 +47,33 @@ HTML_TEMPLATE = """
 
 def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
     app = Flask(__name__)
-    model = load_model(model_path)
+    model = None
+    startup_error = None
+
+    try:
+        model = load_model(model_path)
+    except FileNotFoundError:
+        startup_error = (
+            f"Model not found at {model_path}. Train first with "
+            "`python -m maskanon.cli train --dataset data/sample_phishing_messages.csv --model-path artifacts/phishing_model.joblib`."
+        )
 
     @app.route("/", methods=["GET", "POST"])
     def index():
         prediction = None
         confidence = None
         text = ""
-        error = None
+        error = startup_error
 
         if request.method == "POST":
             text = request.form.get("text", "")
-            try:
-                prediction, confidence = predict_text(model, text)
-            except Exception as exc:
-                error = str(exc)
+            if model is None:
+                error = startup_error
+            else:
+                try:
+                    prediction, confidence = predict_text(model, text)
+                except Exception as exc:
+                    error = str(exc)
 
         return render_template_string(
             HTML_TEMPLATE,
@@ -75,6 +87,9 @@ def create_app(model_path: Path = DEFAULT_MODEL_PATH) -> Flask:
     def api_predict():
         payload = request.get_json(silent=True) or {}
         text = str(payload.get("text", ""))
+        if model is None:
+            return jsonify({"error": startup_error}), 400
+
         try:
             prediction, confidence = predict_text(model, text)
         except Exception as exc:
